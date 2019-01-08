@@ -1,6 +1,7 @@
 const express = require('express');
 const cookieSession = require('cookie-session');
 const passport = require('passport');
+const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const keys=require('./config/keys');
@@ -11,6 +12,7 @@ require('./models/User');
 
 const User = mongoose.model('users');
 
+app.use(bodyParser.json());
 app.use(
   cookieSession({
     maxAge : 30 * 24 * 60 * 60 * 1000,
@@ -19,6 +21,8 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
+
+require('./routes/billingRoutes')(app);
 passport.serializeUser((user,done)=> {
   done(null, user.id);
 
